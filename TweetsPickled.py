@@ -15,19 +15,16 @@ tweets_politics = []
 while tweet:
 	string = tweet[tweet.index("\'")+1:-2]
 	category = tweet.split(" ")[1]
-	person_id = tweet.split(" ")[0]
 	tweets.append( ( 
 		              str( string ),
-		              category,
-		              person_id
+		              category
 		            )
 	             )
 	if category == "Sports":
 		tweets_sports.append(
 			                   (
 					              str( string ),
-					              category,
-					              person_id
+					              category
 			                   )
 			                )
 
@@ -35,8 +32,7 @@ while tweet:
 		tweets_politics.append(
 			                   (
 					              str( string ),
-					              category,
-					              person_id
+					              category
 			                   )
 			                )
 
