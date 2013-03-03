@@ -9,7 +9,7 @@ fin.close()
 tweets_filtered = []
 
 for tweet, tweet_type in tweets:
-    filtered = [e.lower() for e in tweet.split(" ") if len(e) >= 3]
+    filtered = [e.lower() for e in tweet.split(" ") if e not in nltk.corpus.stopwords.words('english')]
     special_words = []
     for word in filtered:
     	if word.startswith("#") or word.startswith("@"):
