@@ -16,8 +16,10 @@ for tweet, tweet_type in tweets:
     		special_words.append(word)
     if special_words :
     	tweets_filtered.append((filtered,tweet_type,special_words))
-    	print (filtered,tweet_type,special_words)
     else :
     	tweets_filtered.append((filtered,tweet_type,False))
 
-print len(tweets_filtered)
+string = pickle.dumps(tweets_filtered)
+fout = open('tweets_filtered.list', 'w')
+fout.write(string)
+fout.close()
