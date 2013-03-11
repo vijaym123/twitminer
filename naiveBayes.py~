@@ -37,8 +37,7 @@ for tweet, tweet_type in tweets:
 			if e[i].isalpha() or e[i]=="'":
 				word+=e[i]
 			else :
-				if word!="" or len(word)>2:
-					words_temp.append(word)
+				words_temp.append(word)
 				word=""
 	filtered = [e.lower() for e in words_temp if e not in nltk.corpus.stopwords.words('english')]
 	tweets_filtered.append((filtered,tweet_type))
@@ -46,8 +45,6 @@ for tweet, tweet_type in tweets:
 word_features = get_word_features(get_words_in_tweets(tweets_filtered))
 training_set = nltk.classify.apply_features(extract_features, tweets)
 classifier = nltk.NaiveBayesClassifier.train(training_set)
-tweets = "S're taking action"
-print classifier.classify(extract_features(tweets.split()))
 
 string = pickle.dumps(tweets_filtered)
 fout = open('tweets_filtered.list', 'w')
