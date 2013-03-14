@@ -15,18 +15,12 @@ def get_word_features(wordlist):
 def extract_features(document):
     document_words = set(document)
     features = {}
+    global word_features
     for word in word_features:
         features['contains(%s)' % word] = (word in document_words)
     return features
 
-fin = open('tweets.list',"r")
-string = fin.read()
-tweets = pickle.loads(string)
-fin.close()
-
-tweets_filtered = []
-
-for tweet, tweet_type in tweets:
+def filter_tweet(tweet,tweet_type):
 	words = tweet.split(" ")
 	words_temp = []
 	for e in words :
@@ -40,16 +34,34 @@ for tweet, tweet_type in tweets:
 				if word!="" or len(word)>2:
 					words_temp.append(word)
 				word=""
-	filtered = [e.lower() for e in words_temp if e not in nltk.corpus.stopwords.words('english')]
-	tweets_filtered.append((filtered,tweet_type))
+	filtered = [e.lower() for e in words_temp if e not in nltk.corpus.stopwords.words('english') and len(e) > 3]
+	return (filtered,tweet_type)
 
-word_features = get_word_features(get_words_in_tweets(tweets_filtered))
-training_set = nltk.classify.apply_features(extract_features, tweets)
-classifier = nltk.NaiveBayesClassifier.train(training_set)
-tweets = "S're taking action"
-print classifier.classify(extract_features(tweets.split()))
+def main():
+	fin = open('tweets_politics.list',"r")
+	string = fin.read()
+	tweets_politics = pickle.loads(string)
+	fin.close()
+	fin = open('tweets_sports.list',"r")
+	string = fin.read()
+	tweets_sports = pickle.loads(string)
+	fin.close()
 
-string = pickle.dumps(tweets_filtered)
-fout = open('tweets_filtered.list', 'w')
-fout.write(string)
-fout.close()
+	tweets_filtered = []
+
+	for tweet, tweet_type in tweets_sports[:-15]+tweets_politics[:-15]:
+		tweet_filter = filter_tweet(tweet,tweet_type)
+		if tweet_filter[0]!=[]:
+			tweets_filtered.append(tweet_filter)	
+	global word_features
+	word_features = get_word_features(get_words_in_tweets(tweets_filtered))
+	training_set = nltk.classify.apply_features(extract_features, tweets_filtered)
+	classifier = nltk.NaiveBayesClassifier.train(training_set)
+
+	string = pickle.dumps(classifier)
+	fout = open('classifier', 'w')
+	fout.write(string)
+	fout.close()
+
+	
+main()
